@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">B站抢票助手</string>
+    <string name="accessibility_service_label">B站抢票助手（无障碍服务）</string>
+    <string name="accessibility_service_desc">用于在B站App中自动点击购票按钮。仅监控B站App的界面变化，不读取其他应用数据。</string>
+</resources>
