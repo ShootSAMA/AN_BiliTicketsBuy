@@ -356,20 +356,19 @@ public class OrderFlowController {
     }
 
     /**
-     * 检测并循环关闭拥挤弹窗（"再试一次"）。
-     * B 站高峰期可能连续弹出多个弹窗，点掉一个又弹一个，
-     * 需要循环点击直到弹窗确认消失才能继续后续操作。
+     * 检测并持续关闭拥挤弹窗（"再试一次"）。
+     * 不做次数限制，以屏幕实际内容为准——只要有弹窗就一直点，
+     * 直到弹窗确认消失才返回。isActive 作为安全阀防止死循环。
      */
     private void dismissRetryPopup() {
-        for (int i = 0; i < 3; i++) {
+        while (isActive.get()) {
             AccessibilityNodeInfo retryButton = BiliButtonFinder.findByText(service, RETRY_TEXTS);
             if (retryButton == null) {
                 return; // 弹窗已消失
             }
-            Log.i(TAG, "检测到拥挤弹窗，自动点击'再试一次' (" + (i + 1) + "/3)");
+            Log.i(TAG, "检测到拥挤弹窗，自动点击'再试一次'");
             clickExecutor.smartClick(retryButton);
 
-            // 等待弹窗关闭动画完成
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -377,7 +376,6 @@ public class OrderFlowController {
                 return;
             }
         }
-        Log.w(TAG, "弹窗关闭失败，已尝试3次");
     }
 
     /**
